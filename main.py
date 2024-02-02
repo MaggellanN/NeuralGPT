@@ -1,16 +1,7 @@
+from openai import OpenAI
 import openai
 import json
-
-
-def get_config():
-    # Функция, которая возвращает конфигурацию из файла или создает новую, если файл отсутствует
-    try:
-        with open("config.json", 'r') as f:
-            config = json.load(f)
-            return config
-
-    except FileNotFoundError:
-        return create_config()
+import os
 
 
 def create_config():
@@ -18,16 +9,18 @@ def create_config():
     api_key = input("Hello! To start using NeuralGPT, please enter your API key from OpenAI. If you don't have one, we "
                     "recommend you to register at openai.com, go to the developer section and get your key.\n")
 
-    openai.api_key = api_key
-
-    # Тестовый запрос, чтобы убедиться, что API ключ действителен
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt="Hello",
-        max_tokens=50
-    )
-
     try:
+        # Проверяем валидность API ключа
+        client = OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            temperature=0.7,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": "Hi."},
+            ]
+        )
+
         # Создаем новую конфигурацию
         config = {
             "model": "gpt-3.5-turbo",
@@ -41,12 +34,36 @@ def create_config():
             json.dump(config, f)
 
         return config
-    except:
 
-# Основная функция, вызывающая get_config
+    except openai.AuthenticationError as e:
+
+        print(f"OpenAI Authentication Error: {e}")
+
+        print("Looks like the provided API key is invalid. Please check and try again.")
+
+    except Exception as e:
+
+        print(f"Error: {e}")
+
+
+def get_config():
+    # Функция, которая возвращает конфигурацию из файла или создает новую, если файл отсутствует
+    try:
+        with open("config.json", 'r') as f:
+            config = json.load(f)
+            return config
+
+    except FileNotFoundError:
+        return create_config()
+
+
 def main():
     config = get_config()
-    print("Current Configuration:", config)
+    print(f"Hello!\nCurrent Configuration: {config}")
+    print("To start a chat enter /chat, to change the configuration enter /config, and to exit enter /exit.")
+
+    while True:
+        command = input("> ")
 
 
 if __name__ == '__main__':
