@@ -75,8 +75,10 @@ class Config:
                     if 0 <= new_temperature <= 2:
                         break
                     else:
+                        print("Invalid input. Please enter a number between 0 and 2.")
                         new_temperature = input("Enter new temperature 0-2: ")
                 except ValueError:
+                    print("Invalid input. Please enter a number between 0 and 2.")
                     new_temperature = input("Enter new temperature 0-2: ")
 
             config["temperature"] = new_temperature
@@ -91,8 +93,10 @@ class Config:
                     if new_max_tokens > 0:
                         break
                     else:
+                        print("Invalid input. Please enter a positive integer.")
                         new_max_tokens = input("Enter new max tokens: ")
                 except ValueError:
+                    print("Invalid input. Please enter a positive integer.")
                     new_max_tokens = input("Enter new max tokens: ")
 
             config["max_tokens"] = new_max_tokens

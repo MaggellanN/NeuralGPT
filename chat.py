@@ -27,7 +27,7 @@ class Chat:
         return self.save(chat)
 
     def save(self, chat, chat_id=None):
-        # Функция для сохранения чата
+        # Function for saving a chat
         try:
             with open("chat.json", 'r+') as f:
                 chats = json.load(f)
